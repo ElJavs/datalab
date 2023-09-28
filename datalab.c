@@ -308,23 +308,30 @@ int conditional(int x, int y, int z) {
  *   Rating: 3                                                                  
  */
 int isSmaller(int x, int y) {
-    int signX = (x >> 31) & 1;  // Get the sign bit of x (0 if x is non-negative, 1 if x is negative)
-    int signY = (y >> 31) & 1;  // Get the sign bit of y (0 if y is non-negative, 1 if y is negative)
-    // Calculate the difference between y and x
-    int diff = y + (~x + 1);
-    // Get the sign bit of the difference (0 if y - x is non-negative, 1 if y - x is negative)
-    int signDiff = (diff >> 31) & 1;
-    // Case 1: If x is positive (signX is 0) and y is negative (signY is 1), return 1
-    int case1 = signX & !signY;
-    // Case 2: If x and y have the same sign (signX and signY are either both 0 or both 1),
-    // and the sign of the difference is negative, return 1
-    int case2 = !signX & !signY & signDiff;
-    // Case 3: Handle the special case where x is INT_MIN and y is any negative number,
-    // including INT_MIN itself, because INT_MIN - INT_MIN is 0 and should return 0.
-    int case3 = x == y;
-    // Combine the cases to determine the result
-    return case1 | case2 | !case3;
+
+  // Get sign bits
+  int x_sign = x >> 31; 
+  int y_sign = y >> 31;
+
+  // Calculate y - x
+  int diff = y + (~x + 1);
+  
+  // Get sign bit of diff
+  int diff_sign = diff >> 31;
+
+  // Handle x = INT_MIN edge case
+  int x_min = !x;
+
+  // Handle y = INT_MAX edge case
+  int y_max = !(y + 1);
+
+  // Calculate cases
+  int case1 = x_sign & !y_sign;
+  int case2 = !x_sign & !y_sign & diff_sign;
+
+  return case1 | case2 | x_min | !y_max;
 }
+
 
 
 
