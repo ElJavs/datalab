@@ -301,15 +301,15 @@ int conditional(int x, int y, int z) {
   return (mask & y) | (~mask & z);  // Use bitwise AND and OR operations combined with the mask to select y or z based on the condition
 }
 /*                                                                              
- * isSmaller - if x < y  then return 1, else return 0                          
- *   Example: isSmaller(4,5) = 1.                                              
- *   Legal ops: ! ~ & ^ | + << >>                                              
- *   Max ops: 24                                                                
- *   Rating: 3                                                                  
+ * isSmaller - if x < y  then return 1, else return 0                         
+ *   Example: isSmaller(4,5) = 1.                                               
+ *   Legal ops: ! ~ & ^ | + << >>
+ *   Max ops: 24
+ *   Rating: 3
  */
 int isSmaller(int x, int y) {
   // Get sign bits
-  int x_sign = x >> 31; 
+  int x_sign = x >> 31;
   int y_sign = y >> 31;
   // Calculate y - x
   int diff = y + (~x + 1);
@@ -322,9 +322,13 @@ int isSmaller(int x, int y) {
   // Calculate cases
   int case1 = x_sign & !y_sign;
   int case2 = !x_sign & !y_sign & diff_sign;
-  int x_equals_y = !(x ^ y); // 1 if x == y, 0 otherwise
-  return case1 | case2 | x_min | !y_max | !x_equals_y; 
+  // Additional check for x == y
+  int x_equals_y = !(x ^ y);
+  // Fix for INT_MIN edge case
+  int min_min = !x & !y;
+  return (case1 | case2 | x_min | !y_max | !x_equals_y) & !min_min;
 }
+
 
 
 
