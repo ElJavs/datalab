@@ -308,28 +308,22 @@ int conditional(int x, int y, int z) {
  *   Rating: 3                                                                  
  */
 int isSmaller(int x, int y) {
-
   // Get sign bits
   int x_sign = x >> 31; 
   int y_sign = y >> 31;
-
   // Calculate y - x
   int diff = y + (~x + 1);
-  
   // Get sign bit of diff
   int diff_sign = diff >> 31;
-
   // Handle x = INT_MIN edge case
   int x_min = !x;
-
   // Handle y = INT_MAX edge case
   int y_max = !(y + 1);
-
   // Calculate cases
   int case1 = x_sign & !y_sign;
   int case2 = !x_sign & !y_sign & diff_sign;
-
-  return case1 | case2 | x_min | !y_max;
+  int x_equals_y = !(x ^ y); // 1 if x == y, 0 otherwise
+  return case1 | case2 | x_min | !y_max | !x_equals_y; 
 }
 
 
